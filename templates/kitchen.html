@@ -1,0 +1,58 @@
+{% include 'includes/header.html' %}
+    
+<div class="row mt-2">
+    <div class="col-md-12 profile-section">
+        <h4>Pesanan</h4>
+        <table id="orderTable" class="table table-borderless">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Menu Pesanan</th>
+                    <th>Jumlah</th>
+                    <th>Waktu</th>
+                    <th>Pesanan</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pesanan in pesanan_list %}
+                <tr>
+                    <td>{{ pesanan.order_id }}</td>
+                    <td>{{ pesanan.nama_pesanan }}</td>
+                    <td>{{ pesanan.qty }}</td>
+                    <td>{{ pesanan.waktu|date:"d-m-Y H:i" }}</td>
+                    <td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#detailModal{{ pesanan.id }}">Detail</a></td>
+                    <td>
+                        <select class="status-select status-pending" onchange="updateStatusColor(this)">
+                            <option class="status-pending" value="Pesanan Masuk" {% if pesanan.status_pesanan == 'pesanan_masuk' %}selected{% endif %}>Pesanan Masuk</option>
+                            <option class="status-processing" value="Diproses" {% if pesanan.status_pesanan == 'diproses' %}selected{% endif %}>Diproses</option>
+                            <option class="status-completed" value="Selesai" {% if pesanan.status_pesanan == 'selesai' %}selected{% endif %}>Selesai</option>
+                        </select>
+                    </td>
+                </tr>
+                
+                <div class="modal fade" id="detailModal{{ pesanan.id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ pesanan.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detailModalLabel{{ pesanan.id }}">Detail Pesanan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{ pesanan.catatan }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+{% include 'includes/footer.html' %}

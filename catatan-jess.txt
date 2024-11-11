@@ -1,0 +1,103 @@
+Install django channels dan Daphne 
+
+pip install channels daphne
+
+lalu masukkan channels ke INSTALLED_APPS
+
+tambahkan juga ASGI Application untuk channels 
+
+ASGI_APPLICATION = 'jess.asgi.application' #jess ini nama project ya bukan nama apps django, jangan salah 
+
+di folder project ada asgi.py modifikasikan menjadi 
+
+import os
+from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+import your_app_name.routing
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jess.settings')
+
+application = ProtocolTypeRouter({
+    "http": get_asgi_application(),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            your_app_name.routing.websocket_urlpatterns
+        )
+    ),
+})
+
+NOTE: jika ada error install kriptografinya
+
+pip install cryptography==3.4.8
+
+pip install --upgrade cryptography
+pip install --upgrade daphne channels
+
+atau install ulang kriptografinya 
+
+pip install --no-binary cryptography cryptography
+
+atau bisa juga autobahn nya 
+
+pip install autobahn
+
+jangan lupa buat consumers.py 
+
+import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+
+class KitchenConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.channel_layer.group_add("order_updates", self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard("order_updates", self.channel_name)
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        order_id = data['order_id']
+        status_pesanan = data['status_pesanan']
+
+        await self.channel_layer.group_send(
+            "order_updates",
+            {
+                'type': 'order_status_update',
+                'order_id': order_id,
+                'status_pesanan': status_pesanan,
+            }
+        )
+
+    async def order_status_update(self, event):
+        await self.send(text_data=json.dumps({
+            'order_id': event['order_id'],
+            'status_pesanan': event['status_pesanan']
+        }))
+
+
+class KasirConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.channel_layer.group_add("order_updates", self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard("order_updates", self.channel_name)
+
+    async def order_status_update(self, event):
+        await self.send(text_data=json.dumps({
+            'order_id': event['order_id'],
+            'status_pesanan': event['status_pesanan']
+        }))
+
+		
+juga routing.py 
+
+from django.urls import path
+from . import consumers
+
+websocket_urlpatterns = [
+    path('ws/kitchen/', consumers.KitchenConsumer.as_asgi()),
+    path('ws/kasir/', consumers.KasirConsumer.as_asgi()),
+]
+
