@@ -23,7 +23,7 @@
                         </thead>
                         <tbody id="orderTableBody">
                             {% for pesanan in pesanan_list %}
-                            <tr>
+                            <tr id="order-{{ pesanan.order_id }}">
                                 <td>{{ pesanan.order_id }}</td>
                                 <td class="editable">{{ pesanan.nama_pesanan }}</td>
                                 <td>{{ pesanan.qty }}</td>
@@ -36,8 +36,6 @@
                             </tr>
                             {% endfor %}
                         </tbody>
-                        
-                        
                     </table>
 
                     <div id="addOrderForm" class="mt-3" style="display: none;">

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <style>
+        .nav-link.active {
+            background-color: #E0F7E9;
+            border-radius: 8px;
+        }
+        .bg-tosca {
+            background-color: #40E0D0;
+            padding: 10px;
+            border-radius: 8px;
+            color: #fff;
+        }
+        .btn-tosca {
+            background-color: #40E0D0;
+            color: #fff;
+            border: none;
+        }
+        .btn-tosca:hover {
+            background-color: #35c2b1;
+        }
+        .status-pending { background-color: #FFE6E1; color: #FF5E4A; }
+        .status-processing { background-color: #FFF4D5; color: #FFA500; }
+        .status-completed { background-color: #DFF5E1; color: #47D764; }
+        .status-select {
+            width: 100%;
+            padding: 5px;
+            border-radius: 8px;
+            color: inherit;
+        }
+		.btn-edit {
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+        }
+        .btn-edit:hover {
+            background-color: #e0c400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        
+		<nav class="navbar navbar-expand-lg navbar-light">
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand me-3" href="#"><img src="https://via.placeholder.com/60" alt="Logo" height="30" width="90"></a>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Daftar Pesanan</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="ms-auto d-flex align-items-center">
+                <a href="#" class="text-dark me-3"><i class="fas fa-bell"></i></a>
+                
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-circle" height="40" width="40">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end mt-2">
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="mt-4 bg-tosca">
+            <h2>Menu</h2>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-12 profile-section">
+                <h4>Pesanan</h4>
+                <table id="orderTable" class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+							<th>Menu Pesanan</th>
+							<th>Jumlah</th>
+                            <th>Waktu</th>
+                            <th>Pesanan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01015</td>
+							<td>Appetizer Platter</td>
+							<td>1</td>
+                            <td>17 May 2024 - 16.00</td>
+                            <td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#detailModal">Detail</a></td>
+                            <td>
+                                <select class="status-select status-pending" onchange="updateStatusColor(this)">
+                                    <option class="status-pending" value="Pesanan Masuk">Pesanan Masuk</option>
+                                    <option class="status-processing" value="Diproses">Diproses</option>
+                                    <option class="status-completed" value="Selesai">Selesai</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Detail Pesanan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Ice Creamnya dikasih sambel ya mas
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#orderTable').DataTable();
+        });
+
+        function updateStatusColor(selectElement) {
+            selectElement.className = 'status-select ' + selectElement.options[selectElement.selectedIndex].className;
+        }
+		document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        document.getElementById('addOrderBtn').addEventListener('click', function() {
+            document.getElementById('addOrderForm').style.display = 'block';
+        });
+
+        document.getElementById('cancelOrderBtn').addEventListener('click', function() {
+            document.getElementById('addOrderForm').style.display = 'none';
+            document.getElementById('pesanan').value = '';
+            document.getElementById('qty').value = '';
+            document.getElementById('notes').value = '';
+        });
+
+        document.getElementById('submitOrderBtn').addEventListener('click', function() {
+            const pesanan = document.getElementById('pesanan').value;
+            const qty = document.getElementById('qty').value;
+
+            if (pesanan && qty) {
+        
+			const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="editable">${pesanan}</td>
+                    <td class="editable">${qty}</td>
+                    <td><span class="order-status status-pending">Pesanan Masuk</span></td>
+                    <td><button class="btn btn-edit" onclick="editRow(this)">Edit</button></td>
+                `;
+
+                document.getElementById('orderTableBody').appendChild(newRow);
+
+                document.getElementById('addOrderForm').style.display = 'none';
+                document.getElementById('pesanan').value = '';
+                document.getElementById('qty').value = '';
+                document.getElementById('notes').value = '';
+            } else {
+                alert("Isi nama menu dan jumlah terlebih dahulu.");
+            }
+        });
+
+        function editRow(button) {
+            const row = button.closest('tr');
+            const editableCells = row.querySelectorAll('.editable');
+
+            editableCells.forEach(cell => {
+                const currentValue = cell.textContent;
+                const input = document.createElement('input');
+                input.type = cell.cellIndex === 1 ? 'number' : 'text'; 
+                input.value = currentValue;
+                input.className = 'form-control';
+                cell.textContent = '';
+                cell.appendChild(input);
+            });
+
+            button.textContent = 'Save';
+            button.className = 'btn btn-success';
+            button.onclick = function() { saveRow(button); };
+        }
+
+        function saveRow(button) {
+            const row = button.closest('tr');
+            const editableCells = row.querySelectorAll('.editable');
+
+            editableCells.forEach(cell => {
+                const input = cell.querySelector('input');
+                cell.textContent = input.value;
+            });
+
+            button.textContent = 'Edit';
+            button.className = 'btn btn-edit';
+            button.onclick = function() { editRow(button); };
+        }
+    </script>
+</body>
+</html>

@@ -143,7 +143,7 @@ if (socket && path.includes('/kasir/')) {
 
         const row = document.querySelector(`#order-${orderId}`);
         if (row) {
-            // ngupdate status di kolom status
+            // mengubah nilai di kolom status_pesanan
             const statusCell = row.querySelector('.order-status');
             statusCell.textContent = statusPesanan.replace('_', ' ');
 
